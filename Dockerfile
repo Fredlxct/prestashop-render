@@ -23,12 +23,18 @@ RUN docker-php-ext-configure gd \
     intl \
     soap
 
+RUN a2enmod rewrite
+
+RUN echo '<Directory /var/www/html>\n\
+    AllowOverride All\n\
+    Require all granted\n\
+</Directory>' >> /etc/apache2/apache2.conf
+
 WORKDIR /var/www/html
 
 RUN wget -q -O prestashop.zip \
     "https://github.com/PrestaShop/PrestaShop/releases/download/8.1.0/prestashop_8.1.0.zip" \
     && unzip -q prestashop.zip \
-    && unzip -q prestashop.zip prestashop.zip -d . 2>/dev/null || true \
     && rm -f prestashop.zip
 
 RUN chown -R www-data:www-data /var/www/html/ \
